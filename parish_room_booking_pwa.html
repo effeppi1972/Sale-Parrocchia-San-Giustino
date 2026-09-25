@@ -10,7 +10,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Sale Parrocchia">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><path d='M50 15 L85 45 L85 85 L15 85 L15 45 Z' fill='none' stroke='white' stroke-width='6'/><path d='M50 25 V55 M35 40 H65' stroke='white' stroke-width='6' stroke-linecap='round'/></svg>">
 
   <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -43,9 +42,35 @@
   <!-- TOP HEADER -->
   <header class="bg-blue-600 text-white shadow-md sticky top-0 z-30">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <div class="bg-white/20 p-2 rounded-lg">
-          <i data-lucide="church" class="w-6 h-6"></i>
+      <div class="flex items-center space-x-3">
+        <!-- LOGO PERSONALIZZATO BASATO SULLA CHIESA NELL'IMMAGINE -->
+        <div class="bg-amber-100/90 p-1.5 rounded-xl shadow-inner border border-amber-200/50 flex-shrink-0">
+          <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Cielo di sfondo -->
+            <rect width="100" height="100" rx="16" fill="#60A5FA"/>
+            <!-- Campanile Sinistro -->
+            <rect x="12" y="20" width="22" height="65" fill="#FDE68A"/>
+            <rect x="10" y="16" width="26" height="6" fill="#D97706"/>
+            <path d="M12 16 L23 6 L34 16 Z" fill="#B45309"/>
+            <rect x="18" y="26" width="10" height="12" rx="5" fill="#78350F"/>
+            <!-- Ala Destra -->
+            <rect x="70" y="42" width="20" height="43" fill="#FEF08A"/>
+            <rect x="74" y="48" width="6" height="8" rx="1" fill="#78350F"/>
+            <rect x="82" y="48" width="6" height="8" rx="1" fill="#78350F"/>
+            <!-- Corpo Principale Chiesa -->
+            <path d="M28 42 L52 24 L76 42 V85 H28 Z" fill="#FCD34D"/>
+            <!-- Tetto Principale -->
+            <path d="M25 43 L52 22 L79 43" stroke="#B45309" stroke-width="5" stroke-linecap="round"/>
+            <!-- Crocetta sul tetto -->
+            <path d="M52 14 V22 M48 17 H56" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+            <!-- Finestra a croce centrale -->
+            <rect x="46" y="40" width="12" height="16" fill="#78350F" rx="1"/>
+            <path d="M52 40 V56 M46 46 H58" stroke="#FCD34D" stroke-width="2"/>
+            <!-- Portale ad arco -->
+            <path d="M42 85 V70 A10 10 0 0 1 62 70 V85 Z" fill="#451A03"/>
+            <!-- Cancello/Ringhiera base -->
+            <path d="M8 85 H92" stroke="#1E293B" stroke-width="3"/>
+          </svg>
         </div>
         <div>
           <h1 class="font-bold text-lg leading-tight">Sale Parrocchiali</h1>
@@ -83,7 +108,6 @@
         <i data-lucide="user-check" class="w-5 h-5 text-blue-600"></i>
         <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Tu sei:</span>
         <select id="active-manager-select" onchange="changeActiveManager(this.value)" class="bg-slate-100 border border-slate-300 rounded-lg px-2 py-1 text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <!-- Populated by JS -->
         </select>
       </div>
       <div class="text-xs text-slate-500">
@@ -91,39 +115,52 @@
       </div>
     </div>
 
-    <!-- CONTROLS & FILTERS BAR -->
-    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+    <!-- VIEW SELECTION TOGGLE & FILTERS BAR -->
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-4">
       
-      <!-- Date Picker & Quick Nav -->
-      <div class="flex items-center gap-2">
-        <button onclick="shiftDate(-1)" class="p-2 border rounded-lg hover:bg-slate-50 text-slate-600">
-          <i data-lucide="chevron-left" class="w-5 h-5"></i>
-        </button>
-        <input type="date" id="filter-date" onchange="renderBookings()" class="border rounded-lg px-3 py-1.5 text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <button onclick="shiftDate(1)" class="p-2 border rounded-lg hover:bg-slate-50 text-slate-600">
-          <i data-lucide="chevron-right" class="w-5 h-5"></i>
-        </button>
-        <button onclick="setToday()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-xs font-medium rounded-lg text-slate-700">
-          Oggi
-        </button>
-      </div>
+      <!-- Top Row: View Switcher -->
+      <div class="flex items-center justify-between border-b pb-3 flex-wrap gap-2">
+        <div class="flex bg-slate-100 p-1 rounded-xl gap-1">
+          <button id="view-mode-date-btn" onclick="setViewMode('DATE')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-white text-blue-600 shadow-sm">
+            <i data-lucide="calendar" class="w-4 h-4"></i> Per Data
+          </button>
+          <button id="view-mode-all-btn" onclick="setViewMode('ALL')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-600 hover:text-slate-900">
+            <i data-lucide="list" class="w-4 h-4"></i> Tutti gli Impegni
+          </button>
+        </div>
 
-      <!-- Room Filter & Search -->
-      <div class="flex items-center gap-2 flex-1 md:justify-end">
-        <select id="filter-room" onchange="renderBookings()" class="border rounded-lg px-3 py-1.5 text-sm bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 max-w-[180px]">
-          <option value="ALL">Tutte le sale</option>
-          <!-- Populated by JS -->
-        </select>
-        <div class="relative flex-1 md:max-w-[200px]">
-          <i data-lucide="search" class="w-4 h-4 absolute left-2.5 top-2.5 text-slate-400"></i>
-          <input type="text" id="filter-search" oninput="renderBookings()" placeholder="Cerca..." class="w-full pl-8 pr-3 py-1.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div id="date-controls" class="flex items-center gap-2">
+          <button onclick="shiftDate(-1)" class="p-1.5 border rounded-lg hover:bg-slate-50 text-slate-600">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+          </button>
+          <input type="date" id="filter-date" onchange="renderBookings()" class="border rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button onclick="shiftDate(1)" class="p-1.5 border rounded-lg hover:bg-slate-50 text-slate-600">
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+          <button onclick="setToday()" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-xs font-medium rounded-lg text-slate-700">
+            Oggi
+          </button>
         </div>
       </div>
+
+      <!-- Bottom Row: Room Filter & Search Bar -->
+      <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+        <div class="flex items-center gap-2 flex-1">
+          <select id="filter-room" onchange="renderBookings()" class="border rounded-lg px-3 py-1.5 text-xs bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[150px]">
+            <option value="ALL">Tutte le sale</option>
+          </select>
+
+          <div class="relative flex-1">
+            <i data-lucide="search" class="w-4 h-4 absolute left-2.5 top-2.5 text-slate-400"></i>
+            <input type="text" id="filter-search" oninput="renderBookings()" placeholder="Cerca evento, nome, nota..." class="w-full pl-8 pr-3 py-1.5 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- BOOKINGS LIST CONTAINER -->
     <div id="bookings-container" class="flex-1 space-y-3">
-      <!-- Cards rendered here by JS -->
     </div>
 
   </main>
@@ -135,83 +172,92 @@
     </button>
   </div>
 
-  <!-- BOOKING MODAL (NEW/EDIT) -->
+  <!-- BOOKING MODAL (SCHEDA LARGA A 2 COLONNE) -->
   <div id="booking-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]">
-      <div class="bg-blue-600 text-white px-5 py-4 flex items-center justify-between">
-        <h3 id="modal-title" class="font-bold text-lg">Nuova Prenotazione</h3>
-        <button onclick="closeBookingModal()" class="text-white/80 hover:text-white">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh]">
+      <div class="bg-blue-600 text-white px-6 py-4 flex items-center justify-between">
+        <h3 id="modal-title" class="font-bold text-lg flex items-center gap-2">
+          <i data-lucide="calendar-plus" class="w-5 h-5"></i> Nuova Prenotazione
+        </h3>
+        <button onclick="closeBookingModal()" class="text-white/80 hover:text-white p-1 rounded-lg hover:bg-blue-700">
           <i data-lucide="x" class="w-6 h-6"></i>
         </button>
       </div>
 
-      <form id="booking-form" onsubmit="saveBooking(event)" class="p-5 space-y-4 overflow-y-auto custom-scrollbar">
+      <form id="booking-form" onsubmit="saveBooking(event)" class="p-6 overflow-y-auto custom-scrollbar space-y-4">
         <input type="hidden" id="booking-id">
 
-        <!-- Responsabile Inserimento -->
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Inserito da (Responsabile)</label>
-          <select id="form-manager" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-slate-50 font-medium">
-            <!-- Populated dynamically -->
-          </select>
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Left Column -->
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Inserito da (Responsabile)</label>
+              <select id="form-manager" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-slate-50 font-medium">
+              </select>
+            </div>
 
-        <!-- Sala -->
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Sala Parrocchiale *</label>
-          <select id="form-room" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-            <!-- Populated dynamically -->
-          </select>
-        </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Sala Parrocchiale *</label>
+              <select id="form-room" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none font-semibold text-blue-900">
+              </select>
+            </div>
 
-        <!-- Data -->
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Data *</label>
-          <input type="date" id="form-date" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Data Evento *</label>
+              <input type="date" id="form-date" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none font-medium">
+            </div>
 
-        <!-- Orari Inizio / Fine -->
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Ora Inizio *</label>
-            <input type="time" id="form-time-start" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ora Inizio *</label>
+                <input type="time" id="form-time-start" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none font-medium">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ora Fine *</label>
+                <input type="time" id="form-time-end" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none font-medium">
+              </div>
+            </div>
           </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Ora Fine *</label>
-            <input type="time" id="form-time-end" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+
+          <!-- Right Column -->
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Motivo Occupazione *</label>
+              <select id="form-reason" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <option value="Catechismo">Catechismo</option>
+                <option value="Evento Parrocchiale">Evento Parrocchiale</option>
+                <option value="Prove Musicali / Coro">Prove Musicali / Coro</option>
+                <option value="Riunione">Riunione</option>
+                <option value="Festa / Compleanno">Festa / Compleanno</option>
+                <option value="Attività Oratorio">Attività Oratorio</option>
+                <option value="Altro">Altro</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Referente / Gruppo *</label>
+              <input type="text" id="form-applicant" required placeholder="Es. Coro dei giovani, Famiglia Rossi..." class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Telefono Referente</label>
+              <input type="tel" id="form-phone" placeholder="Es. +39 333 1234567" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Note / Dettagli Aggiuntivi</label>
+              <textarea id="form-notes" rows="2" placeholder="Es. Serve videoproiettore, sedie aggiuntive..." class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+            </div>
           </div>
         </div>
 
-        <!-- Motivo Occupazione -->
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Motivo Occupazione *</label>
-          <select id="form-reason" required class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-            <option value="Catechismo">Catechismo</option>
-            <option value="Evento Parrocchiale">Evento Parrocchiale</option>
-            <option value="Prove Musicali / Coro">Prove Musicali / Coro</option>
-            <option value="Riunione">Riunione</option>
-            <option value="Festa / Compleanno">Festa / Compleanno</option>
-            <option value="Attività Oratorio">Attività Oratorio</option>
-            <option value="Altro">Altro</option>
-          </select>
-        </div>
-
-        <!-- Referente / Richiedente -->
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Referente / Gruppo *</label>
-          <input type="text" id="form-applicant" required placeholder="Es. Coro dei giovani, Famiglia Rossi..." class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        </div>
-
-        <!-- Note -->
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Note / Dettagli Aggiuntivi</label>
-          <textarea id="form-notes" rows="2" placeholder="Es. Serve videoproiettore, sedie aggiuntive..." class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
-        </div>
-
-        <!-- Actions -->
-        <div class="pt-2 flex gap-2 justify-end">
-          <button type="button" onclick="closeBookingModal()" class="px-4 py-2 border rounded-lg text-slate-600 hover:bg-slate-50 text-sm font-medium">Annulla</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium">Salva Prenotazione</button>
+        <div class="pt-4 border-t border-slate-200 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeBookingModal()" class="px-5 py-2.5 border rounded-xl text-slate-600 hover:bg-slate-50 text-sm font-semibold transition">
+            Annulla
+          </button>
+          <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition flex items-center gap-2">
+            <i data-lucide="check" class="w-4 h-4"></i> Salva Prenotazione
+          </button>
         </div>
       </form>
     </div>
@@ -229,20 +275,13 @@
         </button>
       </div>
       <div class="p-5 space-y-4 overflow-y-auto custom-scrollbar">
-        <p class="text-xs text-slate-500">Aggiungi o modifica i nomi dei responsabili che possono gestire le prenotazioni.</p>
-        
-        <!-- Add New Manager -->
         <div class="flex gap-2">
           <input type="text" id="new-manager-name" placeholder="Nome nuovo responsabile..." class="flex-1 border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
           <button onclick="addManager()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium flex items-center gap-1">
             <i data-lucide="plus" class="w-4 h-4"></i> Aggiungi
           </button>
         </div>
-
-        <!-- List -->
-        <div id="managers-list-container" class="space-y-2 pt-2">
-          <!-- Rendered dynamically -->
-        </div>
+        <div id="managers-list-container" class="space-y-2 pt-2"></div>
       </div>
     </div>
   </div>
@@ -259,20 +298,13 @@
         </button>
       </div>
       <div class="p-5 space-y-4 overflow-y-auto custom-scrollbar">
-        <p class="text-xs text-slate-500">Aggiungi nuove sale o rinomina quelle esistenti. Le modifiche si sincronizzeranno con tutti i responsabili.</p>
-        
-        <!-- Add New Room -->
         <div class="flex gap-2">
           <input type="text" id="new-room-name" placeholder="Nome nuova sala..." class="flex-1 border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
           <button onclick="addRoom()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium flex items-center gap-1">
             <i data-lucide="plus" class="w-4 h-4"></i> Aggiungi
           </button>
         </div>
-
-        <!-- List -->
-        <div id="rooms-list-container" class="space-y-2 pt-2">
-          <!-- Rendered dynamically -->
-        </div>
+        <div id="rooms-list-container" class="space-y-2 pt-2"></div>
       </div>
     </div>
   </div>
@@ -288,12 +320,7 @@
           <i data-lucide="x" class="w-6 h-6"></i>
         </button>
       </div>
-
       <div class="p-5 space-y-4 overflow-y-auto custom-scrollbar text-sm">
-        <p class="text-slate-600 text-xs">
-          Per consentire la sincronizzazione gratuita in tempo reale tra tutti i responsabili, inserisci le credenziali del progetto Google Firebase.
-        </p>
-
         <div class="space-y-3 bg-slate-50 p-3 rounded-xl border">
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-0.5">API Key</label>
@@ -318,14 +345,13 @@
         </div>
 
         <div id="share-link-box" class="hidden space-y-2 pt-2 border-t">
-          <label class="block text-xs font-semibold text-slate-600">Link Condivisibile per gli altri Responsabili:</label>
+          <label class="block text-xs font-semibold text-slate-600">Link Condivisibile:</label>
           <div class="flex gap-2">
             <input type="text" id="share-url-input" readonly class="flex-1 border rounded px-2 py-1 text-xs bg-slate-100 font-mono text-slate-600 select-all">
             <button onclick="copyShareUrl()" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-xs font-medium flex items-center gap-1">
-              <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copia Link
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copia
             </button>
           </div>
-          <p class="text-[11px] text-slate-500">Invia questo link agli altri responsabili su WhatsApp per collegarli allo stesso database!</p>
         </div>
 
         <div class="flex justify-end gap-2 pt-2">
@@ -336,9 +362,8 @@
     </div>
   </div>
 
-  <!-- APPLICATION LOGIC JS -->
+  <!-- JS LOGIC -->
   <script>
-    // --- INITIAL DATA & CONFIG ---
     const DEFAULT_MANAGERS = ["Don Matteo", "Chiara", "Marco", "Elena", "Giuseppe"];
     const DEFAULT_ROOMS = [
       "Sala Massimiliano Kolbe",
@@ -356,21 +381,18 @@
     let activeManager = localStorage.getItem('parish_active_manager') || managers[0];
     let bookings = JSON.parse(localStorage.getItem('parish_bookings')) || [];
 
+    let viewMode = 'DATE'; // 'DATE' or 'ALL'
     let db = null;
-    let firebaseUnsubscribe = null;
 
-    // --- INITIALIZATION ---
     document.addEventListener('DOMContentLoaded', () => {
       initApp();
       registerServiceWorker();
     });
 
     function initApp() {
-      // Set today date filter
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('filter-date').value = today;
 
-      // Ensure active manager is valid
       if (!managers.includes(activeManager)) {
         activeManager = managers[0] || "Don Matteo";
       }
@@ -383,11 +405,28 @@
       lucide.createIcons();
     }
 
-    // --- ROOMS MANAGEMENT ---
+    function setViewMode(mode) {
+      viewMode = mode;
+      const dateBtn = document.getElementById('view-mode-date-btn');
+      const allBtn = document.getElementById('view-mode-all-btn');
+      const dateControls = document.getElementById('date-controls');
+
+      if (mode === 'DATE') {
+        dateBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-white text-blue-600 shadow-sm";
+        allBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-600 hover:text-slate-900";
+        dateControls.classList.remove('hidden');
+      } else {
+        allBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-white text-blue-600 shadow-sm";
+        dateBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-600 hover:text-slate-900";
+        dateControls.classList.add('hidden');
+      }
+
+      renderBookings();
+    }
+
     function updateRoomsUI() {
       localStorage.setItem('parish_rooms', JSON.stringify(rooms));
 
-      // 1. Room Filter Dropdown
       const filterSelect = document.getElementById('filter-room');
       const currentFilter = filterSelect.value;
       filterSelect.innerHTML = '<option value="ALL">Tutte le sale</option>';
@@ -399,7 +438,6 @@
       });
       filterSelect.value = currentFilter || "ALL";
 
-      // 2. Booking Form Room Select
       const formRoomSelect = document.getElementById('form-room');
       formRoomSelect.innerHTML = '';
       rooms.forEach(r => {
@@ -409,19 +447,14 @@
         formRoomSelect.appendChild(opt);
       });
 
-      // 3. Rooms Management List
       const container = document.getElementById('rooms-list-container');
       if (container) {
         container.innerHTML = rooms.map((r, index) => `
           <div class="flex items-center justify-between p-2 bg-slate-50 border rounded-lg">
             <span class="text-sm font-medium text-slate-700">${r}</span>
             <div class="flex items-center gap-1">
-              <button onclick="editRoomName(${index})" class="p-1 text-slate-400 hover:text-blue-600" title="Rinomina">
-                <i data-lucide="edit-2" class="w-4 h-4"></i>
-              </button>
-              <button onclick="deleteRoom(${index})" class="p-1 text-slate-400 hover:text-red-600" title="Elimina">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-              </button>
+              <button onclick="editRoomName(${index})" class="p-1 text-slate-400 hover:text-blue-600"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+              <button onclick="deleteRoom(${index})" class="p-1 text-slate-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
             </div>
           </div>
         `).join('');
@@ -429,23 +462,14 @@
       }
     }
 
-    function openRoomsModal() {
-      updateRoomsUI();
-      document.getElementById('rooms-modal').classList.remove('hidden');
-    }
-
-    function closeRoomsModal() {
-      document.getElementById('rooms-modal').classList.add('hidden');
-    }
+    function openRoomsModal() { updateRoomsUI(); document.getElementById('rooms-modal').classList.remove('hidden'); }
+    function closeRoomsModal() { document.getElementById('rooms-modal').classList.add('hidden'); }
 
     function addRoom() {
       const input = document.getElementById('new-room-name');
       const val = input.value.trim();
       if (!val) return;
-      if (rooms.includes(val)) {
-        alert("Questa sala esiste già!");
-        return;
-      }
+      if (rooms.includes(val)) { alert("Questa sala esiste già!"); return; }
       rooms.push(val);
       input.value = '';
       updateRoomsUI();
@@ -457,10 +481,7 @@
       const newName = prompt("Inserisci il nuovo nome per la sala:", oldName);
       if (newName && newName.trim() !== "" && newName !== oldName) {
         rooms[index] = newName.trim();
-        // Update existing bookings with old room name
-        bookings.forEach(b => {
-          if (b.room === oldName) b.room = newName.trim();
-        });
+        bookings.forEach(b => { if (b.room === oldName) b.room = newName.trim(); });
         saveBookingsToCloudOrLocal();
         updateRoomsUI();
         saveRoomsToCloud();
@@ -469,46 +490,33 @@
     }
 
     function deleteRoom(index) {
-      const roomName = rooms[index];
-      if (rooms.length <= 1) {
-        alert("Deve esserci almeno una sala nell'elenco!");
-        return;
-      }
-      if (confirm(`Sei sicuro di voler eliminare la sala "${roomName}"?`)) {
+      if (rooms.length <= 1) { alert("Deve esserci almeno una sala!"); return; }
+      if (confirm(`Eliminare la sala "${rooms[index]}"?`)) {
         rooms.splice(index, 1);
         updateRoomsUI();
         saveRoomsToCloud();
       }
     }
 
-    // --- MANAGERS MANAGEMENT ---
     function updateManagersUI() {
       localStorage.setItem('parish_managers', JSON.stringify(managers));
       localStorage.setItem('parish_active_manager', activeManager);
 
-      // Top bar select
       const activeSelect = document.getElementById('active-manager-select');
       activeSelect.innerHTML = managers.map(m => `<option value="${m}" ${m === activeManager ? 'selected' : ''}>${m}</option>`).join('');
-
       document.getElementById('active-manager-badge').textContent = activeManager;
 
-      // Form manager select
       const formSelect = document.getElementById('form-manager');
       formSelect.innerHTML = managers.map(m => `<option value="${m}">${m}</option>`).join('');
 
-      // Management list
       const container = document.getElementById('managers-list-container');
       if (container) {
         container.innerHTML = managers.map((m, index) => `
           <div class="flex items-center justify-between p-2 bg-slate-50 border rounded-lg">
             <span class="text-sm font-medium text-slate-700">${m}</span>
             <div class="flex items-center gap-1">
-              <button onclick="editManagerName(${index})" class="p-1 text-slate-400 hover:text-blue-600">
-                <i data-lucide="edit-2" class="w-4 h-4"></i>
-              </button>
-              <button onclick="deleteManager(${index})" class="p-1 text-slate-400 hover:text-red-600">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-              </button>
+              <button onclick="editManagerName(${index})" class="p-1 text-slate-400 hover:text-blue-600"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+              <button onclick="deleteManager(${index})" class="p-1 text-slate-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
             </div>
           </div>
         `).join('');
@@ -516,28 +524,15 @@
       }
     }
 
-    function changeActiveManager(val) {
-      activeManager = val;
-      updateManagersUI();
-    }
-
-    function openManagersModal() {
-      updateManagersUI();
-      document.getElementById('managers-modal').classList.remove('hidden');
-    }
-
-    function closeManagersModal() {
-      document.getElementById('managers-modal').classList.add('hidden');
-    }
+    function changeActiveManager(val) { activeManager = val; updateManagersUI(); }
+    function openManagersModal() { updateManagersUI(); document.getElementById('managers-modal').classList.remove('hidden'); }
+    function closeManagersModal() { document.getElementById('managers-modal').classList.add('hidden'); }
 
     function addManager() {
       const input = document.getElementById('new-manager-name');
       const val = input.value.trim();
       if (!val) return;
-      if (managers.includes(val)) {
-        alert("Questo responsabile esiste già!");
-        return;
-      }
+      if (managers.includes(val)) { alert("Questo responsabile esiste già!"); return; }
       managers.push(val);
       input.value = '';
       updateManagersUI();
@@ -556,24 +551,24 @@
     }
 
     function deleteManager(index) {
-      if (managers.length <= 1) {
-        alert("Deve rimanere almeno un responsabile!");
-        return;
-      }
+      if (managers.length <= 1) { alert("Deve rimanere almeno un responsabile!"); return; }
       const removed = managers.splice(index, 1)[0];
       if (activeManager === removed) activeManager = managers[0];
       updateManagersUI();
       saveManagersToCloud();
     }
 
-    // --- BOOKINGS RENDER & LOGIC ---
     function renderBookings() {
       const container = document.getElementById('bookings-container');
       const dateVal = document.getElementById('filter-date').value;
       const roomVal = document.getElementById('filter-room').value;
       const searchVal = document.getElementById('filter-search').value.toLowerCase().trim();
 
-      let filtered = bookings.filter(b => b.date === dateVal);
+      let filtered = [...bookings];
+
+      if (viewMode === 'DATE') {
+        filtered = filtered.filter(b => b.date === dateVal);
+      }
 
       if (roomVal !== 'ALL') {
         filtered = filtered.filter(b => b.room === roomVal);
@@ -584,74 +579,131 @@
           b.applicant.toLowerCase().includes(searchVal) ||
           b.room.toLowerCase().includes(searchVal) ||
           b.manager.toLowerCase().includes(searchVal) ||
+          (b.phone && b.phone.toLowerCase().includes(searchVal)) ||
           (b.reason && b.reason.toLowerCase().includes(searchVal)) ||
           (b.notes && b.notes.toLowerCase().includes(searchVal))
         );
       }
-
-      // Sort by start time
-      filtered.sort((a, b) => a.timeStart.localeCompare(b.timeStart));
 
       if (filtered.length === 0) {
         container.innerHTML = `
           <div class="bg-white rounded-xl p-8 text-center text-slate-400 border border-dashed">
             <i data-lucide="calendar-x" class="w-12 h-12 mx-auto mb-2 text-slate-300"></i>
             <p class="font-medium text-slate-600">Nessuna prenotazione trovata</p>
-            <p class="text-xs text-slate-400 mt-1">Nessun evento registrato per questa data/filtro.</p>
+            <p class="text-xs text-slate-400 mt-1">Nessun evento presente per i filtri selezionati.</p>
           </div>
         `;
         lucide.createIcons();
         return;
       }
 
-      container.innerHTML = filtered.map(b => {
-        const reasonBadgeColor = getReasonBadgeColor(b.reason);
-        return `
-          <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <div class="space-y-1.5 flex-1">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="px-2.5 py-0.5 rounded-md bg-blue-100 text-blue-800 font-bold text-xs">
-                  ${b.timeStart} - ${b.timeEnd}
+      if (viewMode === 'DATE') {
+        filtered.sort((a, b) => a.timeStart.localeCompare(b.timeStart));
+        container.innerHTML = filtered.map(b => renderBookingCard(b)).join('');
+      } else {
+        filtered.sort((a, b) => {
+          if (a.date !== b.date) return a.date.localeCompare(b.date);
+          return a.timeStart.localeCompare(b.timeStart);
+        });
+
+        const grouped = {};
+        filtered.forEach(b => {
+          if (!grouped[b.date]) grouped[b.date] = [];
+          grouped[b.date].push(b);
+        });
+
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        container.innerHTML = Object.keys(grouped).map(dateKey => {
+          const formattedDate = formatDateItalian(dateKey);
+          const isToday = dateKey === todayStr;
+          const isPast = dateKey < todayStr;
+
+          return `
+            <div class="space-y-2">
+              <div class="flex items-center gap-2 pt-2 pb-1 sticky top-14 bg-slate-100/90 backdrop-blur z-10">
+                <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg ${isToday ? 'bg-blue-600 text-white' : isPast ? 'bg-slate-300 text-slate-700' : 'bg-slate-800 text-white'}">
+                  ${formattedDate} ${isToday ? '(Oggi)' : ''}
                 </span>
-                <span class="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 font-semibold text-xs">
-                  ${b.room}
-                </span>
-                <span class="px-2 py-0.5 rounded-md text-xs font-semibold ${reasonBadgeColor}">
-                  ${b.reason || 'Occupazione'}
-                </span>
+                <div class="h-px bg-slate-300 flex-1"></div>
               </div>
-
-              <div class="text-base font-bold text-slate-800">
-                ${b.applicant}
-              </div>
-
-              ${b.notes ? `
-                <div class="text-xs text-slate-600 bg-slate-50 p-2 rounded-lg border border-slate-100 flex items-start gap-1">
-                  <i data-lucide="file-text" class="w-3.5 h-3.5 text-slate-400 mt-0.5 flex-shrink-0"></i>
-                  <span>${b.notes}</span>
-                </div>
-              ` : ''}
-
-              <div class="text-xs text-slate-400 flex items-center gap-1">
-                <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
-                <span>Inserito da: <strong class="text-slate-600">${b.manager}</strong></span>
+              <div class="space-y-2">
+                ${grouped[dateKey].map(b => renderBookingCard(b, true)).join('')}
               </div>
             </div>
-
-            <!-- Actions -->
-            <div class="flex items-center gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 justify-end">
-              <button onclick="editBooking('${b.id}')" class="p-2 text-slate-500 hover:text-blue-600 hover:bg-slate-50 rounded-lg">
-                <i data-lucide="edit" class="w-4 h-4"></i>
-              </button>
-              <button onclick="deleteBooking('${b.id}')" class="p-2 text-slate-500 hover:text-red-600 hover:bg-slate-50 rounded-lg">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
+          `;
+        }).join('');
+      }
 
       lucide.createIcons();
+    }
+
+    function renderBookingCard(b, showDateTag = false) {
+      const reasonBadgeColor = getReasonBadgeColor(b.reason);
+      const cleanPhone = b.phone ? b.phone.replace(/[^0-9+]/g, '') : '';
+      return `
+        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div class="space-y-1.5 flex-1">
+            <div class="flex flex-wrap items-center gap-2">
+              ${showDateTag ? `<span class="px-2 py-0.5 rounded-md bg-slate-800 text-white font-bold text-xs"><i data-lucide="calendar" class="w-3 h-3 inline mr-1"></i>${b.date}</span>` : ''}
+              <span class="px-2.5 py-0.5 rounded-md bg-blue-100 text-blue-800 font-bold text-xs">
+                ${b.timeStart} - ${b.timeEnd}
+              </span>
+              <span class="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 font-semibold text-xs">
+                ${b.room}
+              </span>
+              <span class="px-2 py-0.5 rounded-md text-xs font-semibold ${reasonBadgeColor}">
+                ${b.reason || 'Occupazione'}
+              </span>
+            </div>
+
+            <div class="text-base font-bold text-slate-800">
+              ${b.applicant}
+            </div>
+
+            ${b.phone ? `
+              <div class="text-xs text-slate-600 flex items-center gap-2 pt-0.5">
+                <i data-lucide="phone" class="w-3.5 h-3.5 text-slate-400"></i>
+                <span class="font-mono">${b.phone}</span>
+                <a href="tel:${cleanPhone}" class="px-2 py-0.5 bg-green-50 text-green-700 hover:bg-green-100 rounded border border-green-200 font-semibold text-[11px] flex items-center gap-1">
+                  <i data-lucide="phone-call" class="w-3 h-3"></i> Chiama
+                </a>
+                <a href="https://wa.me/${cleanPhone.replace('+', '')}" target="_blank" class="px-2 py-0.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded border border-emerald-200 font-semibold text-[11px] flex items-center gap-1">
+                  <i data-lucide="message-square" class="w-3 h-3"></i> WhatsApp
+                </a>
+              </div>
+            ` : ''}
+
+            ${b.notes ? `
+              <div class="text-xs text-slate-600 bg-slate-50 p-2 rounded-lg border border-slate-100 flex items-start gap-1">
+                <i data-lucide="file-text" class="w-3.5 h-3.5 text-slate-400 mt-0.5 flex-shrink-0"></i>
+                <span>${b.notes}</span>
+              </div>
+            ` : ''}
+
+            <div class="text-xs text-slate-400 flex items-center gap-1">
+              <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
+              <span>Inserito da: <strong class="text-slate-600">${b.manager}</strong></span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 justify-end">
+            <button onclick="editBooking('${b.id}')" class="p-2 text-slate-500 hover:text-blue-600 hover:bg-slate-50 rounded-lg">
+              <i data-lucide="edit" class="w-4 h-4"></i>
+            </button>
+            <button onclick="deleteBooking('${b.id}')" class="p-2 text-slate-500 hover:text-red-600 hover:bg-slate-50 rounded-lg">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function formatDateItalian(dateString) {
+      const parts = dateString.split('-');
+      if (parts.length !== 3) return dateString;
+      const d = new Date(parts[0], parts[1] - 1, parts[2]);
+      return d.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' });
     }
 
     function getReasonBadgeColor(reason) {
@@ -683,6 +735,7 @@
         document.getElementById('form-time-end').value = bookingToEdit.timeEnd;
         document.getElementById('form-reason').value = bookingToEdit.reason || "Catechismo";
         document.getElementById('form-applicant').value = bookingToEdit.applicant;
+        document.getElementById('form-phone').value = bookingToEdit.phone || "";
         document.getElementById('form-notes').value = bookingToEdit.notes || "";
       } else {
         document.getElementById('modal-title').textContent = "Nuova Prenotazione";
@@ -709,6 +762,7 @@
       const timeEnd = document.getElementById('form-time-end').value;
       const reason = document.getElementById('form-reason').value;
       const applicant = document.getElementById('form-applicant').value.trim();
+      const phone = document.getElementById('form-phone').value.trim();
       const notes = document.getElementById('form-notes').value.trim();
 
       if (timeStart >= timeEnd) {
@@ -716,7 +770,6 @@
         return;
       }
 
-      // Check conflict
       const hasConflict = bookings.some(b => {
         if (b.id === id) return false;
         if (b.room === room && b.date === date) {
@@ -730,7 +783,7 @@
         return;
       }
 
-      const bookingObj = { id, manager, room, date, timeStart, timeEnd, reason, applicant, notes, updatedAt: Date.now() };
+      const bookingObj = { id, manager, room, date, timeStart, timeEnd, reason, applicant, phone, notes, updatedAt: Date.now() };
 
       const existingIndex = bookings.findIndex(b => b.id === id);
       if (existingIndex >= 0) {
@@ -774,7 +827,6 @@
       renderBookings();
     }
 
-    // --- FIREBASE CLOUD SYNC ---
     function checkURLFirebaseParams() {
       const params = new URLSearchParams(window.location.search);
       if (params.has('apiKey') && params.has('projectId')) {
@@ -803,14 +855,12 @@
           document.getElementById('sync-status-dot').className = "w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse";
           document.getElementById('sync-status-text').textContent = "Sincronizzato Live Cloud";
 
-          // Listen Bookings
           db.collection('bookings').onSnapshot(snapshot => {
             bookings = [];
             snapshot.forEach(doc => bookings.push(doc.data()));
             renderBookings();
           });
 
-          // Listen Managers
           db.collection('settings').doc('managers').onSnapshot(doc => {
             if (doc.exists && doc.data().list) {
               managers = doc.data().list;
@@ -818,7 +868,6 @@
             }
           });
 
-          // Listen Rooms
           db.collection('settings').doc('rooms').onSnapshot(doc => {
             if (doc.exists && doc.data().list) {
               rooms = doc.data().list;
@@ -885,7 +934,7 @@
       localStorage.setItem('parish_fb_config', JSON.stringify(config));
       localStorage.setItem('parish_fb_enabled', enabled ? 'true' : 'false');
 
-      alert("Impostazioni Cloud salvate! Ricarica la pagina per applicare.");
+      alert("Impostazioni Cloud salvate!");
       window.location.reload();
     }
 
@@ -904,10 +953,9 @@
       const input = document.getElementById('share-url-input');
       input.select();
       document.execCommand('copy');
-      alert("Link copiato! Invialo su WhatsApp ai responsabili.");
+      alert("Link copiato!");
     }
 
-    // --- SERVICE WORKER & PWA ---
     function registerServiceWorker() {
       if ('serviceWorker' in navigator) {
         const swCode = `
