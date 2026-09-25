@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestione Sale Parrocchiali</title>
+  <style>
+    :root { --primary: #2c3e50; --secondary: #3498db; --danger: #e74c3c; --bg: #f5f6fa; }
+    body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; background-color: var(--bg); color: #333; }
+    header { background-color: var(--primary); color: white; text-align: center; padding: 1rem; }
+    .container { max-width: 600px; margin: 0 auto; padding: 1rem; }
+    .card { background: white; border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    h2 { margin-top: 0; color: var(--primary); font-size: 1.2rem; }
+    .form-group { margin-bottom: 0.8rem; }
+    label { display: block; margin-bottom: 0.3rem; font-weight: bold; font-size: 0.9rem; }
+    input, select { width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
+    button { background-color: var(--secondary); color: white; border: none; padding: 0.8rem; border-radius: 4px; cursor: pointer; font-size: 1rem; width: 100%; font-weight: bold; }
+    .booking-item { border-left: 4px solid var(--secondary); background: #f8f9fa; padding: 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; display: flex; justify-content: space-between; align-items: center; }
+    .booking-info h4 { margin: 0 0 0.2rem 0; color: var(--primary); }
+    .booking-info p { margin: 0; font-size: 0.85rem; color: #666; }
+    .btn-delete { background-color: var(--danger); width: auto; padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+    .alert { padding: 0.8rem; border-radius: 4px; margin-bottom: 1rem; display: none; font-size: 0.9rem; }
+    .alert-error { background-color: #f8d7da; color: #721c24; }
+    .alert-success { background-color: #d4edda; color: #155724; }
+  </style>
+</head>
+<body>
+  <header><h1>Gestione Sale Parrocchiali</h1></header>
+  <div class="container">
+    <div id="alertMsg" class="alert"></div>
+    <div class="card">
+      <h2>Nuova Prenotazione</h2>
+      <form id="bookingForm">
+        <div class="form-group">
+          <label>Sala:</label>
+          <select id="roomSelect" required>
+            <option value="">-- Seleziona una sala --</option>
+            <option value="Sala Massimiliano Kolbe">Sala Massimiliano Kolbe</option>
+            <option value="Sala Giovanni XXIII">Sala Giovanni XXIII</option>
+            <option value="Locale Bar">Locale Bar</option>
+            <option value="Sala prova1">Sala prova1</option>
+            <option value="Sala prova2">Sala prova2</option>
+            <option value="Sala prova3">Sala prova3</option>
+            <option value="Sala provare">Sala provare</option>
+            <option value="Sala prova5">Sala prova5</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Richiedente / Gruppo:</label>
+          <input type="text" id="applicant" placeholder="Es. Catechismo / Rossi" required>
+        </div>
+        <div class="form-group">
+          <label>Data:</label>
+          <input type="date" id="date" required>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <div class="form-group" style="flex: 1;">
+            <label>Ora Inizio:</label>
+            <input type="time" id="startTime" required>
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label>Ora Fine:</label>
+            <input type="time" id="endTime" required>
+          </div>
+        </div>
+        <button type="submit">Conferma Prenotazione</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2>Prenotazioni Esistenti</h2>
+      <div id="bookingsList"><p style="text-align: center; color: #777;">Nessuna prenotazione presente.</p></div>
+    </div>
+  </div>
+  <script>
+    const STORAGE_KEY = 'parish_room_bookings';
+    function getBookings() { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    function saveBookings(bookings) { localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings)); }
+    function showAlert(msg, isError = false) {
+      const el = document.getElementById('alertMsg');
+      el.textContent = msg;
+      el.className = 'alert ' + (isError ? 'alert-error' : 'alert-success');
+      el.style.display = 'block';
+      setTimeout(() => el.style.display = 'none', 4000);
+    }
+    function checkConflict(nb) {
+      return getBookings().some(b => b.room === nb.room && b.date === nb.date && (nb.startTime < b.endTime && nb.endTime > b.startTime));
+    }
+    document.getElementById('bookingForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newBooking = {
+        id: Date.now().toString(),
+        room: document.getElementById('roomSelect').value,
+        applicant: document.getElementById('applicant').value,
+        date: document.getElementById('date').value,
+        startTime: document.getElementById('startTime').value,
+        endTime: document.getElementById('endTime').value
+      };
+      if (newBooking.startTime >= newBooking.endTime) {
+        showAlert('L\'ora di fine deve essere successiva all\'ora di inizio.', true);
+        return;
+      }
+      if (checkConflict(newBooking)) {
+        showAlert('La sala è già occupata in questo orario!', true);
+        return;
+      }
+      const bookings = getBookings();
+      bookings.push(newBooking);
+      bookings.sort((a, b) => (a.date + a.startTime).localeCompare(b.date + b.startTime));
+      saveBookings(bookings);
+      showAlert('Prenotazione registrata!');
+      document.getElementById('bookingForm').reset();
+      renderBookings();
+    });
+    function deleteBooking(id) {
+      if (confirm('Eliminare la prenotazione?')) {
+        saveBookings(getBookings().filter(b => b.id !== id));
+        renderBookings();
+        showAlert('Prenotazione eliminata.');
+      }
+    }
+    function renderBookings() {
+      const list = document.getElementById('bookingsList');
+      const bookings = getBookings();
+      if (!bookings.length) {
+        list.innerHTML = '<p style="text-align: center; color: #777;">Nessuna prenotazione presente.</p>';
+        return;
+      }
+      list.innerHTML = bookings.map(b => `
+        <div class="booking-item">
+          <div class="booking-info">
+            <h4>${b.room}</h4>
+            <p><strong>Chi:</strong> ${b.applicant}</p>
+            <p><strong>Data:</strong> ${b.date} (${b.startTime} - ${b.endTime})</p>
+          </div>
+          <button class="btn-delete" onclick="deleteBooking('${b.id}')">Elimina</button>
+        </div>
+      `).join('');
+    }
+    renderBookings();
+  </script>
+</body>
+</html>
